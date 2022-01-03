@@ -1,8 +1,7 @@
 [package]
 name = "day01"
 version = "0.1.0"
-edition = "2018"
-# edition = "2021" # can't be used with current ghaction-rust-coverage version
+edition = "2021"
 
 [dependencies]
 anyhow = "1"
