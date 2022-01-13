@@ -1,0 +1,10 @@
+[package]
+name = "day03"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+nom = "7"
+sqrid = "0"
+itertools = "0"
