@@ -6,6 +6,7 @@
 use anyhow::Result;
 use chrono::NaiveDate;
 use chrono::NaiveDateTime;
+use std::cmp;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Event {
@@ -22,8 +23,8 @@ impl Default for Event {
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Entry {
-    when: NaiveDateTime,
-    event: Event,
+    pub when: NaiveDateTime,
+    pub event: Event,
 }
 
 impl Default for Entry {
@@ -32,6 +33,18 @@ impl Default for Entry {
             when: NaiveDate::from_ymd(2000, 1, 1).and_hms(0, 0, 0),
             event: Event::default(),
         }
+    }
+}
+
+impl cmp::Ord for Entry {
+    fn cmp(&self, other: &Self) -> cmp::Ordering {
+        self.when.cmp(&other.when)
+    }
+}
+
+impl cmp::PartialOrd for Entry {
+    fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
