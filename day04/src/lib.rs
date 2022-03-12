@@ -8,10 +8,12 @@ use chrono::NaiveDate;
 use chrono::NaiveDateTime;
 use std::cmp;
 
+pub type Guard = usize;
+
 #[derive(Debug, PartialEq, Eq)]
 pub enum Event {
     Sleep,
-    Begin(usize),
+    Begin(Guard),
     Wakes,
 }
 
@@ -90,6 +92,7 @@ pub mod parser {
 
     use super::Entry;
     use super::Event;
+    use super::Guard;
 
     pub fn sleep(input: &str) -> IResult<&str, Event> {
         combinator::map(bytes::tag("falls asleep"), |_| Event::Sleep)(input)
@@ -103,7 +106,7 @@ pub mod parser {
         let (input, _) = bytes::tag("Guard #")(input)?;
         let (input, g) = character::u32(input)?;
         let (input, _) = bytes::tag(" begins shift")(input)?;
-        Ok((input, Event::Begin(g as usize)))
+        Ok((input, Event::Begin(g as Guard)))
     }
 
     pub fn event(input: &str) -> IResult<&str, Event> {

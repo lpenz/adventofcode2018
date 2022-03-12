@@ -12,9 +12,9 @@ use std::io::{stdin, BufRead};
 use day04::*;
 
 fn update(
-    totalsleep: &mut HashMap<usize, i64>,
-    mostsleep: &mut HashMap<usize, HashMap<u32, usize>>,
-    guard: usize,
+    totalsleep: &mut HashMap<Guard, i64>,
+    mostsleep: &mut HashMap<Guard, HashMap<u32, usize>>,
+    guard: Guard,
     since: &mut Option<NaiveDateTime>,
     when: &NaiveDateTime,
 ) {
