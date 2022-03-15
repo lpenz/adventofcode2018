@@ -8,25 +8,6 @@ use std::io::{stdin, BufRead};
 
 use day05::*;
 
-type Polymer = VecDeque<Unit>;
-
-pub fn react(mut polymer: Polymer) -> Polymer {
-    if let Some(u1) = polymer.pop_front() {
-        let mut polymer2 = react(polymer);
-        if let Some(u2) = polymer2.pop_front() {
-            if u1.typ != u2.typ || u1.pol == u2.pol {
-                polymer2.push_front(u2);
-                polymer2.push_front(u1);
-            }
-            polymer2
-        } else {
-            VecDeque::from([u1])
-        }
-    } else {
-        polymer
-    }
-}
-
 fn process(bufin: impl BufRead) -> Result<usize> {
     let input: VecDeque<Unit> = parser::parse(bufin)?.into();
     let polymer = react(input);
@@ -43,16 +24,16 @@ fn test() -> Result<()> {
 fn test_react() -> Result<()> {
     let reacted = react(VecDeque::from(parser::parse(EXAMPLE.as_bytes())?));
     let ans = VecDeque::from([
-        Unit::new('d'),
-        Unit::new('a'),
-        Unit::new('b'),
-        Unit::new('C'),
-        Unit::new('B'),
-        Unit::new('A'),
-        Unit::new('c'),
-        Unit::new('a'),
-        Unit::new('D'),
-        Unit::new('A'),
+        Unit::from('d'),
+        Unit::from('a'),
+        Unit::from('b'),
+        Unit::from('C'),
+        Unit::from('B'),
+        Unit::from('A'),
+        Unit::from('c'),
+        Unit::from('a'),
+        Unit::from('D'),
+        Unit::from('A'),
     ]);
     assert_eq!(reacted, ans);
     Ok(())

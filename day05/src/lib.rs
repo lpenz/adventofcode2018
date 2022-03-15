@@ -4,20 +4,32 @@
 
 #[cfg(test)]
 use anyhow::Result;
+use std::collections::VecDeque;
 
 pub const EXAMPLE: &str = "dabAcCaCBAcCcaDA\n";
 
-#[derive(Debug, PartialEq, Eq)]
+type Polymer = VecDeque<Unit>;
+
+#[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub struct Unit {
     pub typ: char,
     pub pol: bool,
 }
 
-impl Unit {
-    pub fn new(c: char) -> Unit {
+impl From<char> for Unit {
+    fn from(c: char) -> Unit {
         Unit {
             typ: c.to_ascii_lowercase(),
             pol: c.is_lowercase(),
+        }
+    }
+}
+
+impl From<(char, bool)> for Unit {
+    fn from(cb: (char, bool)) -> Unit {
+        Unit {
+            typ: cb.0.to_ascii_lowercase(),
+            pol: cb.1,
         }
     }
 }
@@ -36,7 +48,7 @@ pub mod parser {
     pub fn unit(input: &str) -> IResult<&str, Unit> {
         combinator::map_opt(character::anychar, |c| {
             if c.is_ascii_alphabetic() {
-                Some(Unit::new(c))
+                Some(Unit::from(c))
             } else {
                 None
             }
@@ -63,23 +75,40 @@ pub mod parser {
 fn test() -> Result<()> {
     let input = parser::parse(EXAMPLE.as_bytes())?;
     let ans = vec![
-        Unit::new('d'),
-        Unit::new('a'),
-        Unit::new('b'),
-        Unit::new('A'),
-        Unit::new('c'),
-        Unit::new('C'),
-        Unit::new('a'),
-        Unit::new('C'),
-        Unit::new('B'),
-        Unit::new('A'),
-        Unit::new('c'),
-        Unit::new('C'),
-        Unit::new('c'),
-        Unit::new('a'),
-        Unit::new('D'),
-        Unit::new('A'),
+        Unit::from('d'),
+        Unit::from('a'),
+        Unit::from('b'),
+        Unit::from('A'),
+        Unit::from('c'),
+        Unit::from('C'),
+        Unit::from('a'),
+        Unit::from('C'),
+        Unit::from('B'),
+        Unit::from('A'),
+        Unit::from('c'),
+        Unit::from('C'),
+        Unit::from('c'),
+        Unit::from('a'),
+        Unit::from('D'),
+        Unit::from('A'),
     ];
     assert_eq!(input, ans);
     Ok(())
+}
+
+pub fn react(mut polymer: Polymer) -> Polymer {
+    if let Some(u1) = polymer.pop_front() {
+        let mut polymer2 = react(polymer);
+        if let Some(u2) = polymer2.pop_front() {
+            if u1.typ != u2.typ || u1.pol == u2.pol {
+                polymer2.push_front(u2);
+                polymer2.push_front(u1);
+            }
+            polymer2
+        } else {
+            VecDeque::from([u1])
+        }
+    } else {
+        polymer
+    }
 }
