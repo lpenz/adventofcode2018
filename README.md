@@ -5,3 +5,6 @@
 
 Code for the 2018 puzzles at https://adventofcode.com/2018/
 
+<table><tr>
+<td><a href="https://github.com/lpenz/adventofcode2020">2020 :arrow_right:</td>
+</tr></table>
