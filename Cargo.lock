@@ -140,9 +140,9 @@ dependencies = [
 
 [[package]]
 name = "sqrid"
-version = "0.0.10"
+version = "0.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bfbe839d3086fe94526f699dd2095523cf95987cee04e9e674e02c3ac3ef9280"
+checksum = "6bddf8f4277e99224dbcef48dc7c5636f59cd51fd261fbd340bff49f5967e918"
 
 [[package]]
 name = "time"
