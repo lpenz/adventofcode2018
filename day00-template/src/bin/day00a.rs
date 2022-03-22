@@ -9,7 +9,7 @@ use std::io::{stdin, BufRead};
 use day00::*;
 
 fn process(bufin: impl BufRead) -> Result<usize> {
-    let input = parse(bufin)?;
+    let input = parser::parse(bufin)?;
     Ok(input.len())
 }
 
