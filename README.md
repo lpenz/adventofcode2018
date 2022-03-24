@@ -5,6 +5,15 @@
 
 Code for the 2018 puzzles at https://adventofcode.com/2018/
 
+## Noteworthy days (spoiler alert!)
+
+Some interesting things that happened on specific days:
+
+- Day 06: "simultaneous" breadth-first iteration using [sqrid]
+
+
 <table><tr>
 <td><a href="https://github.com/lpenz/adventofcode2020">2020 :arrow_right:</td>
 </tr></table>
+
+[sqrid]: https://github.com/lpenz/sqrid

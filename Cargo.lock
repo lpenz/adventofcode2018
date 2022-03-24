@@ -28,6 +28,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "copstr"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8931666b7c16e095d6da1dc3c0169c247f0d9c133da4c4e7d42f477b8344cd99"
+
+[[package]]
 name = "day00"
 version = "0.1.0"
 dependencies = [
@@ -73,6 +79,16 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "nom",
+]
+
+[[package]]
+name = "day06"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "copstr",
+ "nom",
+ "sqrid",
 ]
 
 [[package]]

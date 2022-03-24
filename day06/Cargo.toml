@@ -1,0 +1,10 @@
+[package]
+name = "day06"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.52"
+sqrid = "0.0.11"
+nom = "7.1.0"
+copstr = "0.0.2"
