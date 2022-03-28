@@ -2,18 +2,12 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE', which is part of this source code package.
 
-// use anyhow::anyhow;
 use anyhow::Result;
 use std::collections::HashSet;
 use std::io::{stdin, BufRead};
 use std::iter;
 
 use day07::*;
-
-fn is_ready(deps: &[(Step, Step)], done: &[Step], step: &Step) -> bool {
-    deps.iter()
-        .all(|(blocker, dep)| dep != step || done.contains(blocker))
-}
 
 fn process(bufin: impl BufRead) -> Result<String> {
     let deps = parser::parse(bufin)?;
@@ -25,7 +19,7 @@ fn process(bufin: impl BufRead) -> Result<String> {
     while done.len() < steps.len() {
         let mut ready = steps
             .iter()
-            .filter(|s| !done.contains(s) && is_ready(&deps, &done, s))
+            .filter(|s| s.got_ready(&deps, &done))
             .collect::<Vec<_>>();
         ready.sort();
         done.push(*ready[0]);

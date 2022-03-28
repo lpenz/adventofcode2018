@@ -18,6 +18,19 @@ Step F must be finished before step E can begin.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, PartialOrd, Ord)]
 pub struct Step(char);
 
+impl Step {
+    pub fn got_ready(&self, deps: &[(Step, Step)], done: &[Step]) -> bool {
+        !done.contains(self)
+            && deps
+                .iter()
+                .all(|(blocker, dep)| dep != self || done.contains(blocker))
+    }
+
+    pub fn cost(&self) -> u8 {
+        char::from(*self) as u8 - b'A' + 61
+    }
+}
+
 impl From<Step> for char {
     fn from(s: Step) -> char {
         s.0

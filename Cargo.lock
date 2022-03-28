@@ -3,6 +3,12 @@
 version = 3
 
 [[package]]
+name = "andex"
+version = "0.0.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c5f75bcd5ca24d1dd8c6a35fb2ed22a2882a79546f3e6d8e08fddafc78da24bb"
+
+[[package]]
 name = "anyhow"
 version = "1.0.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -95,6 +101,7 @@ dependencies = [
 name = "day07"
 version = "0.1.0"
 dependencies = [
+ "andex",
  "anyhow",
  "nom",
 ]
