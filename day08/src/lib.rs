@@ -8,7 +8,7 @@ use anyhow::Result;
 use andex::*;
 
 pub enum InodeMarker {}
-type Inode = Andex<InodeMarker, 0xFFFFFFFF>;
+pub type Inode = Andex<InodeMarker, 0xFFFFFFFF>;
 
 #[derive(Debug, Default)]
 pub struct Node {
