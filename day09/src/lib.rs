@@ -7,6 +7,9 @@ use anyhow::Result;
 
 pub const EXAMPLE: &str = "9 players; last marble is worth 25 points\n";
 
+pub type Marble = usize;
+pub type Player = usize;
+
 pub mod parser {
     use anyhow::anyhow;
     use anyhow::Result;
@@ -16,7 +19,9 @@ pub mod parser {
     use nom::IResult;
     use std::io::BufRead;
 
-    pub fn line(input: &str) -> IResult<&str, (usize, usize)> {
+    use super::Marble;
+
+    pub fn line(input: &str) -> IResult<&str, (usize, Marble)> {
         let (input, players) = character::u32(input)?;
         let (input, _) = bytes::tag(" players; last marble is worth ")(input)?;
         let (input, lastmarble) = character::u32(input)?;
@@ -25,7 +30,7 @@ pub mod parser {
         Ok((input, (players as usize, lastmarble as usize)))
     }
 
-    pub fn parse(mut bufin: impl BufRead) -> Result<(usize, usize)> {
+    pub fn parse(mut bufin: impl BufRead) -> Result<(usize, Marble)> {
         let mut input = String::default();
         bufin.read_to_string(&mut input)?;
         let result = combinator::all_consuming(line)(&input);
