@@ -4,6 +4,7 @@
 
 #[cfg(test)]
 use anyhow::Result;
+use std::collections::VecDeque;
 use std::fmt;
 
 pub const EXAMPLE: &str = "9 players; last marble is worth 25 points\n";
@@ -19,7 +20,7 @@ pub struct State {
     pub nextmarble: Marble,
     pub icurrmarble: usize,
     pub turn: Marble,
-    pub marbles: Vec<Marble>,
+    pub marbles: VecDeque<Marble>,
     pub scores: Vec<Player>,
 }
 
@@ -32,7 +33,7 @@ impl State {
             nextmarble: 0,
             icurrmarble: 0,
             turn: 0,
-            marbles: vec![0],
+            marbles: vec![0].into_iter().collect(),
             scores: vec![0].repeat(players),
         }
     }
@@ -46,14 +47,14 @@ impl State {
             } else {
                 self.icurrmarble + self.marbles.len()
             } - 7;
-            self.scores[self.nextplayer] += self.marbles.remove(imarble);
+            self.scores[self.nextplayer] += self.marbles.remove(imarble).unwrap();
             self.icurrmarble = imarble;
         } else if self.marbles.len() == 1 {
-            self.marbles.push(self.turn);
+            self.marbles.push_back(self.turn);
             self.icurrmarble = 1;
         } else if self.icurrmarble == self.marbles.len() - 2 {
             self.icurrmarble = self.marbles.len();
-            self.marbles.push(self.turn);
+            self.marbles.push_back(self.turn);
         } else {
             self.icurrmarble = (self.icurrmarble + 2) % self.marbles.len();
             self.marbles.insert(self.icurrmarble, self.turn);
