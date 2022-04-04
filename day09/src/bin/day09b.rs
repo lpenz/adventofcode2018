@@ -9,14 +9,9 @@ use std::io::{stdin, BufRead};
 use day09::*;
 
 fn process(bufin: impl BufRead) -> Result<usize> {
-    let _input = parser::parse(bufin)?;
-    Ok(1)
-}
-
-#[test]
-fn test() -> Result<()> {
-    assert_eq!(process(EXAMPLE.as_bytes())?, 1);
-    Ok(())
+    let (players, lastmarble) = parser::parse(bufin)?;
+    let mut state = State::new(players, 100 * lastmarble);
+    Ok(state.resolve().max_score())
 }
 
 fn main() -> Result<()> {
