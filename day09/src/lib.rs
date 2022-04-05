@@ -4,7 +4,6 @@
 
 #[cfg(test)]
 use anyhow::Result;
-use std::collections::VecDeque;
 use std::fmt;
 
 pub const EXAMPLE: &str = "9 players; last marble is worth 25 points\n";
@@ -18,9 +17,9 @@ pub struct State {
     pub lastmarble: Marble,
     pub nextplayer: Player,
     pub nextmarble: Marble,
-    pub icurrmarble: usize,
     pub turn: Marble,
-    pub marbles: VecDeque<Marble>,
+    pub mcurr: Marble,
+    pub mlinks: Vec<(Marble, Marble)>,
     pub scores: Vec<Player>,
 }
 
@@ -31,9 +30,9 @@ impl State {
             lastmarble,
             nextplayer: 0,
             nextmarble: 0,
-            icurrmarble: 0,
             turn: 0,
-            marbles: vec![0].into_iter().collect(),
+            mcurr: 0,
+            mlinks: vec![(0, 0)].repeat(lastmarble + 2),
             scores: vec![0].repeat(players),
         }
     }
@@ -42,22 +41,25 @@ impl State {
         self.turn += 1;
         if self.turn % 23 == 0 {
             self.scores[self.nextplayer] += self.turn;
-            let imarble = if self.icurrmarble >= 7 {
-                self.icurrmarble
-            } else {
-                self.icurrmarble + self.marbles.len()
-            } - 7;
-            self.scores[self.nextplayer] += self.marbles.remove(imarble).unwrap();
-            self.icurrmarble = imarble;
-        } else if self.marbles.len() == 1 {
-            self.marbles.push_back(self.turn);
-            self.icurrmarble = 1;
-        } else if self.icurrmarble == self.marbles.len() - 2 {
-            self.icurrmarble = self.marbles.len();
-            self.marbles.push_back(self.turn);
+            let mcurr = (0..7).fold(self.mcurr, |mcurr, _| self.mlinks[mcurr].0);
+            let prev = self.mlinks[mcurr].0;
+            let next = self.mlinks[mcurr].1;
+            self.mlinks[prev].1 = next;
+            self.mlinks[next].0 = prev;
+            self.scores[self.nextplayer] += mcurr;
+            self.mcurr = next;
+        } else if self.turn == 1 {
+            self.mlinks[0] = (1, 1);
+            self.mlinks[1] = (0, 0);
+            self.mcurr = 1;
         } else {
-            self.icurrmarble = (self.icurrmarble + 2) % self.marbles.len();
-            self.marbles.insert(self.icurrmarble, self.turn);
+            let newprev = self.mlinks[self.mcurr].1;
+            let newnext = self.mlinks[newprev].1;
+            let new = self.turn;
+            self.mlinks[newprev].1 = new;
+            self.mlinks[newnext].0 = new;
+            self.mlinks[new] = (newprev, newnext);
+            self.mcurr = new;
         }
         if self.turn > 1 {
             self.nextplayer = (self.nextplayer + 1) % self.players;
@@ -66,6 +68,7 @@ impl State {
 
     pub fn resolve(&mut self) -> &State {
         for _ in 0..=self.lastmarble {
+            // eprintln!("{}", self);
             self.play();
         }
         self
@@ -83,12 +86,14 @@ impl fmt::Display for State {
             "{:3} / {:3} [{}] ",
             self.turn, self.lastmarble, self.nextplayer
         )?;
-        for (i, m) in self.marbles.iter().enumerate() {
-            if i == self.icurrmarble {
+        let mut m = 0;
+        for _ in 0..self.turn + 1 {
+            if m == self.mcurr {
                 write!(f, "({}) ", m)?;
             } else {
                 write!(f, " {}  ", m)?;
             }
+            m = self.mlinks[m].1;
         }
         Ok(())
     }
@@ -138,5 +143,7 @@ fn test_resolve() -> Result<()> {
     assert_eq!(State::new(17, 1104).resolve().max_score(), 2764);
     assert_eq!(State::new(21, 6111).resolve().max_score(), 54718);
     assert_eq!(State::new(30, 5807).resolve().max_score(), 37305);
+    // for perf
+    assert_eq!(State::new(30, 580700).resolve().max_score(), 320997431);
     Ok(())
 }
