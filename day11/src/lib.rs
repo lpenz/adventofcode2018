@@ -53,10 +53,10 @@ pub fn square_coords_iter(xy: Xy) -> impl Iterator<Item = Xy> {
         .flat_map(move |dx| (0..=2).into_iter().map(move |dy| (xy.0 + dx, xy.1 + dy)))
 }
 
-pub fn grid_coords_par_iter() -> impl ParallelIterator<Item = Xy> {
-    (1..=300)
+pub fn grid_coords_par_iter(size: usize) -> impl ParallelIterator<Item = Xy> {
+    (1..=(300 - size + 1))
         .into_par_iter()
-        .flat_map(|x| (1..=300).into_par_iter().map(move |y| (x, y)))
+        .flat_map(move |x| (1..=(300 - size + 1)).into_par_iter().map(move |y| (x, y)))
 }
 
 pub fn square_coords_par_iter(xy: Xy) -> impl ParallelIterator<Item = Xy> {

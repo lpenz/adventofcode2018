@@ -12,10 +12,10 @@ use day11::*;
 
 fn process(bufin: impl BufRead) -> Result<(usize, usize)> {
     let serial = parser::parse(bufin)?;
-    let grid = grid_coords_par_iter()
+    let grid = grid_coords_par_iter(1)
         .map(|xy| (xy, cell_power_calc(xy, serial)))
         .collect::<HashMap<_, _>>();
-    let maxpower = grid_coords_par_iter()
+    let maxpower = grid_coords_par_iter(1)
         .filter(|xy| xy.0 <= 298 && xy.1 <= 298)
         .map(|xy| {
             let power = square_coords_iter(xy).map(|xy| grid[&xy]).sum::<i64>();
