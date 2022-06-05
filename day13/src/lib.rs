@@ -4,10 +4,10 @@
 
 use std::fmt;
 
-#[cfg(test)]
+use anyhow::anyhow;
 use anyhow::Result;
 
-pub type Sqrid = sqrid::sqrid_create!(13, 6, false);
+pub type Sqrid = sqrid::sqrid_create!(151, 151, false);
 pub type Qa = sqrid::qa_create!(Sqrid);
 pub type Grid = sqrid::grid_create!(Sqrid, Cell);
 pub type Qr = sqrid::Qr;
@@ -54,9 +54,9 @@ impl From<char> for Cell {
             ' ' => Cell::Empty,
             '|' => Cell::Verti,
             '-' => Cell::Horiz,
-            '+' => Cell::Cross,
             '/' => Cell::Raise,
             '\\' => Cell::Fall,
+            '+' => Cell::Cross,
             '^' => Cell::Verti,
             'v' => Cell::Verti,
             '>' => Cell::Horiz,
@@ -71,6 +71,71 @@ pub struct Cart {
     pub qa: Qa,
     pub qr: Qr,
     pub lastdir: Qr,
+}
+
+impl Cart {
+    pub fn eval(&mut self, g: &Grid) -> Result<()> {
+        let qr = match g[self.qa] {
+            Cell::Verti => {
+                if self.qr == Qr::N || self.qr == Qr::S {
+                    Ok(self.qr)
+                } else {
+                    Err(anyhow!(
+                        "invalid direction {:?} for position {:?} at {:?}",
+                        self.qr,
+                        g[self.qa],
+                        self.qa
+                    ))
+                }
+            }
+            Cell::Horiz => {
+                if self.qr == Qr::E || self.qr == Qr::W {
+                    Ok(self.qr)
+                } else {
+                    Err(anyhow!(
+                        "invalid direction {:?} for position {:?} at {:?}",
+                        self.qr,
+                        g[self.qa],
+                        self.qa
+                    ))
+                }
+            }
+            Cell::Raise => {
+                // /
+                match self.qr {
+                    Qr::N => Ok(Qr::E),
+                    Qr::E => Ok(Qr::N),
+                    Qr::S => Ok(Qr::W),
+                    Qr::W => Ok(Qr::S),
+                    _ => panic!("invalid qr"),
+                }
+            }
+            Cell::Fall => {
+                // \
+                match self.qr {
+                    Qr::N => Ok(Qr::W),
+                    Qr::E => Ok(Qr::S),
+                    Qr::S => Ok(Qr::E),
+                    Qr::W => Ok(Qr::N),
+                    _ => panic!("invalid qr"),
+                }
+            }
+            Cell::Cross => {
+                let dir = match self.lastdir {
+                    Qr::W => Qr::N,
+                    Qr::N => Qr::E,
+                    Qr::E => Qr::W,
+                    _ => panic!("invalid lastdir"),
+                };
+                self.lastdir = dir;
+                Ok(self.qr + dir)
+            }
+            Cell::Empty => panic!("invalid cell"),
+        }?;
+        self.qa = sqrid::qaqr_resolve(self.qa, qr)?;
+        self.qr = qr;
+        Ok(())
+    }
 }
 
 pub fn qr_from_char(c: char) -> Option<Qr> {
@@ -107,7 +172,6 @@ pub mod parser {
     pub fn line(input: &str) -> IResult<&str, (Vec<Cell>, Vec<Option<Qr>>)> {
         let (input, cellscarts) = multi::many1(cell)(input)?;
         let (input, _) = character::newline(input)?;
-        eprintln!("got {:?}", cellscarts);
         let cells = cellscarts.iter().map(|(cell, _)| *cell).collect();
         let carts = cellscarts.into_iter().map(|(_, cart)| cart).collect();
         Ok((input, (cells, carts)))
@@ -122,6 +186,8 @@ pub mod parser {
             .map(|qa| {
                 let t0 = qa.tuple();
                 let t = (t0.0 as usize, t0.1 as usize);
+                assert!(cellscarts.len() < Qa::HEIGHT as usize);
+                assert!(cellscarts[0].0.len() < Qa::WIDTH as usize);
                 if t.1 < cellscarts.len() && t.0 < cellscarts[t.1].0.len() {
                     cellscarts[t.1].0[t.0]
                 } else {
