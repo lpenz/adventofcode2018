@@ -8,6 +8,14 @@ use std::io::{stdin, BufRead};
 
 use day13::*;
 
+pub const EXAMPLE: &str = r"/->-\        
+|   |  /----\
+| /-+--+-\  |
+| | |  | v  |
+\-+-/  \-+--/
+  \------/   
+";
+
 fn process(bufin: impl BufRead) -> Result<(u16, u16)> {
     let (g, mut carts) = parser::parse(bufin)?;
     loop {
@@ -27,8 +35,6 @@ fn process(bufin: impl BufRead) -> Result<(u16, u16)> {
 
 #[test]
 fn test() -> Result<()> {
-    // let (g, _) = parser::parse(EXAMPLE.as_bytes())?;
-    // eprintln!("{}", g);
     assert_eq!(process(EXAMPLE.as_bytes())?, (7, 3));
     Ok(())
 }

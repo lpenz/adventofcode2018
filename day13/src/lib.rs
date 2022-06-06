@@ -7,9 +7,11 @@ use std::fmt;
 use anyhow::anyhow;
 use anyhow::Result;
 
+// pub type Sqrid = sqrid::sqrid_create!(14, 8, false);
 pub type Sqrid = sqrid::sqrid_create!(151, 151, false);
 pub type Qa = sqrid::qa_create!(Sqrid);
 pub type Grid = sqrid::grid_create!(Sqrid, Cell);
+pub type GridChar = sqrid::grid_create!(Sqrid, char);
 pub type Qr = sqrid::Qr;
 
 pub const EXAMPLE: &str = r"/->-\        
@@ -33,18 +35,20 @@ pub enum Cell {
 
 impl fmt::Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Cell::Empty => ' ',
-                Cell::Verti => '|',
-                Cell::Horiz => '-',
-                Cell::Cross => '+',
-                Cell::Raise => '/',
-                Cell::Fall => '\\',
-            }
-        )
+        write!(f, "{}", char::from(self))
+    }
+}
+
+impl From<&Cell> for char {
+    fn from(c: &Cell) -> char {
+        match c {
+            Cell::Empty => ' ',
+            Cell::Verti => '|',
+            Cell::Horiz => '-',
+            Cell::Cross => '+',
+            Cell::Raise => '/',
+            Cell::Fall => '\\',
+        }
     }
 }
 
@@ -66,7 +70,21 @@ impl From<char> for Cell {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+pub fn gridcarts(g: &Grid, carts: &[Cart]) -> GridChar {
+    let mut h = g.iter().map(char::from).collect::<GridChar>();
+    for c in carts {
+        h[c.qa] = match c.qr {
+            Qr::N => '^',
+            Qr::E => '>',
+            Qr::S => 'v',
+            Qr::W => '<',
+            _ => panic!("invalid qr"),
+        };
+    }
+    h
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Cart {
     pub qa: Qa,
     pub qr: Qr,
@@ -217,7 +235,7 @@ pub mod parser {
 #[test]
 fn test() -> Result<()> {
     let (g, c) = parser::parse(EXAMPLE.as_bytes())?;
-    eprintln!("{}", g);
+    eprintln!("{}", gridcarts(&g, &c));
     assert_eq!(
         c,
         vec![
