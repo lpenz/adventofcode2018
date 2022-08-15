@@ -4,6 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.52"
-nom = "7.1.0"
-chrono = "0.4.19"
+anyhow = "1.0.61"
+nom = "7.1.1"
+
+[dependencies.chrono]
+version = "0.4.21"
+default-features = false
+features = ["clock"]
+
