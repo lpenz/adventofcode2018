@@ -13,8 +13,8 @@ use day07::*;
 
 enum IworkerMarker {}
 type Iworker = Andex<IworkerMarker, 5>;
-type WorkerTime = andex::array!(Iworker, usize);
-type WorkerStep = andex::array!(Iworker, Option<Step>);
+type WorkerTime = andex::andex_array!(Iworker, usize);
+type WorkerStep = andex::andex_array!(Iworker, Option<Step>);
 
 fn process(bufin: impl BufRead) -> Result<usize> {
     let deps = parser::parse(bufin)?;

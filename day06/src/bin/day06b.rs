@@ -18,7 +18,7 @@ fn process(maxdist: usize, bufin: impl BufRead) -> Result<usize> {
     for front in Sqrid::bf_iter(sqrid::qaqr_eval, &center) {
         let mut done = true;
         for (qa, _) in front {
-            let dist: usize = input.iter().map(|center| Qa::manhattan(center, qa)).sum();
+            let dist: usize = input.iter().map(|center| Qa::manhattan(center, &qa)).sum();
             if dist < maxdist {
                 ans += 1;
                 done = false;
