@@ -46,7 +46,7 @@ pub mod parser {
         Ok((input, (nchildren, ndata)))
     }
 
-    pub fn node<'a, 'b>(allnodes: &'a mut Vec<Node>, input: &'b str) -> IResult<&'b str, Inode> {
+    pub fn node<'a>(allnodes: &mut Vec<Node>, input: &'a str) -> IResult<&'a str, Inode> {
         let (mut input, (nchildren, ndata)) = header(input)?;
         let inode = Inode::try_from(allnodes.len()).unwrap();
         allnodes.push(Node {

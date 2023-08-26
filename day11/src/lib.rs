@@ -42,15 +42,11 @@ pub fn cell_power_calc(xy: Xy, serial: i64) -> i64 {
 }
 
 pub fn grid_coords_iter() -> impl Iterator<Item = Xy> {
-    (1..=300)
-        .into_iter()
-        .flat_map(|x| (1..=300).into_iter().map(move |y| (x, y)))
+    (1..=300).flat_map(|x| (1..=300).map(move |y| (x, y)))
 }
 
 pub fn square_coords_iter(xy: Xy) -> impl Iterator<Item = Xy> {
-    (0..=2)
-        .into_iter()
-        .flat_map(move |dx| (0..=2).into_iter().map(move |dy| (xy.0 + dx, xy.1 + dy)))
+    (0..=2).flat_map(move |dx| (0..=2).map(move |dy| (xy.0 + dx, xy.1 + dy)))
 }
 
 pub fn grid_coords_par_iter(size: usize) -> impl ParallelIterator<Item = Xy> {

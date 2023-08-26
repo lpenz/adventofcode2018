@@ -10,17 +10,12 @@ use std::cmp;
 
 pub type Guard = usize;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Default)]
 pub enum Event {
+    #[default]
     Sleep,
     Begin(Guard),
     Wakes,
-}
-
-impl Default for Event {
-    fn default() -> Event {
-        Event::Sleep
-    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -32,7 +27,10 @@ pub struct Entry {
 impl Default for Entry {
     fn default() -> Entry {
         Entry {
-            when: NaiveDate::from_ymd(2000, 1, 1).and_hms(0, 0, 0),
+            when: NaiveDate::from_ymd_opt(2000, 1, 1)
+                .unwrap()
+                .and_hms_opt(0, 0, 0)
+                .unwrap(),
             event: Event::default(),
         }
     }
@@ -126,7 +124,10 @@ pub mod parser {
         let (input, min) = character::u32(input)?;
         let (input, _) = bytes::tag("]")(input)?;
         let (input, _) = character::space1(input)?;
-        let dt = NaiveDate::from_ymd(year, month, day).and_hms(hour, min, 0);
+        let dt = NaiveDate::from_ymd_opt(year, month, day)
+            .unwrap()
+            .and_hms_opt(hour, min, 0)
+            .unwrap();
         let (input, ev) = event(input)?;
         let (input, _) = character::newline(input)?;
         let e = Entry::new(dt, ev);
@@ -147,7 +148,12 @@ pub mod parser {
 fn test() -> Result<()> {
     let dat = parser::parse(EXAMPLE.as_bytes())?;
     assert_eq!(dat.len(), 17);
-    let d = |d, h, m| NaiveDate::from_ymd(1518, 11, d).and_hms(h, m, 0);
+    let d = |d, h, m| {
+        NaiveDate::from_ymd_opt(1518, 11, d)
+            .unwrap()
+            .and_hms_opt(h, m, 0)
+            .unwrap()
+    };
     let ans = vec![
         Entry::new(d(1, 0, 0), Event::Begin(10)),
         Entry::new(d(1, 0, 5), Event::Sleep),

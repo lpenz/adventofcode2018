@@ -32,8 +32,8 @@ impl State {
             nextmarble: 0,
             turn: 0,
             mcurr: 0,
-            mlinks: vec![(0, 0)].repeat(lastmarble + 2),
-            scores: vec![0].repeat(players),
+            mlinks: [(0, 0)].repeat(lastmarble + 2),
+            scores: [0].repeat(players),
         }
     }
 
