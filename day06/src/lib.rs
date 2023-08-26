@@ -60,12 +60,12 @@ fn test() -> Result<()> {
     assert_eq!(
         parser::parse(EXAMPLE.as_bytes())?,
         &[
-            Qa::new::<1, 1>(),
-            Qa::new::<1, 6>(),
-            Qa::new::<8, 3>(),
-            Qa::new::<3, 4>(),
-            Qa::new::<5, 5>(),
-            Qa::new::<8, 9>(),
+            Qa::new_static::<1, 1>(),
+            Qa::new_static::<1, 6>(),
+            Qa::new_static::<8, 3>(),
+            Qa::new_static::<3, 4>(),
+            Qa::new_static::<5, 5>(),
+            Qa::new_static::<8, 9>(),
         ]
     );
     Ok(())
