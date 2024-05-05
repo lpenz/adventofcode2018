@@ -14,7 +14,7 @@ Some interesting things that happened on specific days:
 
 
 <table><tr>
-<td><a href="https://github.com/lpenz/adventofcode2020">2020 :arrow_right:</td>
+<td><a href="https://github.com/lpenz/adventofcode2019">2019 :arrow_right:</td>
 </tr></table>
 
 [sqrid]: https://github.com/lpenz/sqrid
