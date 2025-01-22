@@ -24,7 +24,7 @@ fn update(
         let e = totalsleep.entry(guard).or_insert(0);
         *e += dur;
         // Update mostsleep
-        let e1 = mostsleep.entry(guard).or_insert_with(HashMap::new);
+        let e1 = mostsleep.entry(guard).or_default();
         let min1 = Duration::minutes(1);
         let mut now = *s;
         while now < *when {

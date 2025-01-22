@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.75"
+anyhow = "1.0.95"
 sqrid = "0.0.18"
 nom = "7.1.3"
-copstr = "0.1.0"
+copstr = "0.1.2"

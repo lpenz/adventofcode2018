@@ -41,7 +41,7 @@ fn process(bufin: impl BufRead) -> Result<usize> {
                         continue;
                     }
                     done = false;
-                    let e = data.entry(qa).or_insert_with(Vec::new);
+                    let e = data.entry(qa).or_default();
                     e.push(center);
                 }
             }

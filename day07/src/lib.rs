@@ -5,6 +5,7 @@
 #[cfg(test)]
 use anyhow::Result;
 use std::fmt;
+use std::fmt::Write;
 
 pub const EXAMPLE: &str = "Step C must be finished before step A can begin.
 Step C must be finished before step F can begin.
@@ -80,7 +81,10 @@ pub mod parser {
 }
 
 pub fn render(steps: &[Step]) -> String {
-    steps.iter().map(|c| format!("{}", c)).collect::<String>()
+    steps.iter().fold(String::new(), |mut s, c| {
+        write!(&mut s, "{}", c).unwrap();
+        s
+    })
 }
 
 #[test]
